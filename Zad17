@@ -1,0 +1,249 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdbool.h>
+#include <sys/types.h>
+
+
+pid_t fork();
+
+void pipe(int pInt[2]);
+void and(char *cmd1, char *cmd2);
+void or(char *cmd1, char *cmd2);
+void printMMS();
+void listIPC();
+void pipeInSameProcess(char *cmd1, char *cmd2);
+void namePipes(char *cmd1, char *cmd2);
+void messageQueueing(char *cmd1, char *cmd2);
+void semaphore(char *cmd1, char *cmd2);
+void sharedMemory(char *cmd1, char *cmd2);
+void socket(char *cmd1, char *cmd2);
+
+bool WIFEXITED(int status);
+
+int WEXITSTATUS(int status);
+
+int main(int argc, char *argv[])
+{
+    int N;
+    printf("Please input the number of child processes:");
+    scanf("%d", &N);
+    int i;
+    for(i = 0; i < N; i++)
+    {
+        char *str = (char *)malloc(10 * sizeof(char));
+        int j;
+        for(j = 0; j < 10; j++)
+        {
+            str[j] = 'a' + rand() % 26;
+        }
+        str[j] = '\0';
+        printf("%s\n", str);
+        free(str);
+    }
+    int n;
+    printf("Please input the number of integers:");
+    scanf("%d", &n);
+    int *arr = (int *)malloc(n * sizeof(int));
+    int y;
+    for(y = 0; y < n; y++)
+    {
+        arr[y] = rand() % 100;
+    }
+    int fd[2];
+    pipe(fd);
+    pid_t pid = fork();
+    if(pid == 0)
+    {
+        int sum = 0;
+        int i;
+        for(i = 0; i < n / 2; i++)
+        {
+            sum += arr[i];
+        }
+        write(fd[1], &sum, sizeof(int));
+        exit(0);
+    }
+    else {
+        int sum = 0;
+        int i;
+        for (i = n / 2; i < n; i++) {
+            sum += arr[i];
+        }
+        write(fd[1], &sum, sizeof(int));
+        exit(0);
+    }
+    and("ls", "pwd");
+    or("ls", "pwd");
+    printMMS();
+    listIPC();
+    pipeInSameProcess("ls", "pwd");
+    namePipes("ls", "pwd");
+    messageQueueing("ls", "pwd");
+    semaphore("ls", "pwd");
+    sharedMemory("ls", "pwd");
+    socket("ls", "pwd");
+    return 0;
+}
+void printMMS()
+{
+    while(1)
+    {
+        printf("MMS C CAMP\n");
+        sleep(0.5);
+    }
+}
+void listIPC()
+{
+    printf("IPCs:\n");
+    printf("1. pipe\n");
+    printf("2. and\n");
+    printf("3. or\n");
+    printf("4. waitpid\n");
+}
+void pipeInSameProcess(char *cmd1, char *cmd2)
+{
+    int fd[2];
+    pipe(fd);
+    pid_t pid = fork();
+    if(pid == 0)
+    {
+        dup2(fd[1], 1);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd1, cmd1, NULL);
+    }
+    else {
+        dup2(fd[0], 0);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd2, cmd2, NULL);
+    }
+}
+void namePipes(char *cmd1, char *cmd2)
+{
+    int fd[2];
+    pipe(fd);
+    pid_t pid = fork();
+    if(pid == 0)
+    {
+        dup2(fd[1], 1);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd1, cmd1, NULL);
+    }
+    else {
+        dup2(fd[0], 0);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd2, cmd2, NULL);
+    }
+}
+void messageQueueing(char *cmd1, char *cmd2)
+{
+    int fd[2];
+    pipe(fd);
+    pid_t pid = fork();
+    if(pid == 0)
+    {
+        dup2(fd[1], 1);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd1, cmd1, NULL);
+    }
+    else {
+        dup2(fd[0], 0);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd2, cmd2, NULL);
+    }
+}
+void semaphore(char *cmd1, char *cmd2)
+{
+    int fd[2];
+    pipe(fd);
+    pid_t pid = fork();
+    if(pid == 0)
+    {
+        dup2(fd[1], 1);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd1, cmd1, NULL);
+    }
+    else {
+        dup2(fd[0], 0);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd2, cmd2, NULL);
+    }
+}
+void sharedMemory(char *cmd1, char *cmd2)
+{
+    int fd[2];
+    pipe(fd);
+    pid_t pid = fork();
+    if(pid == 0)
+    {
+        dup2(fd[1], 1);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd1, cmd1, NULL);
+    }
+    else {
+        dup2(fd[0], 0);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd2, cmd2, NULL);
+    }
+}
+void socket(char *cmd1, char *cmd2)
+{
+    int fd[2];
+    pipe(fd);
+    pid_t pid = fork();
+    if(pid == 0)
+    {
+        dup2(fd[1], 1);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd1, cmd1, NULL);
+    }
+    else {
+        dup2(fd[0], 0);
+        close(fd[0]);
+        close(fd[1]);
+        execlp(cmd2, cmd2, NULL);
+    }
+}
+int WEXITSTATUS(int status) {
+    return 0;
+}
+void pipe(int pInt[2])
+{
+    pid_t pid = fork();
+    if(pid == 0)
+    {
+        close(pInt[0]);
+        dup2(pInt[1], 1);
+        execlp("ls", "ls", NULL);
+    }
+    else
+    {
+        close(pInt[1]);
+        dup2(pInt[0], 0);
+        execlp("wc", "wc", NULL);
+    }
+}
+pid_t fork()
+{
+    pid_t pid = fork();
+    if(pid == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return pid;
+    }
+}
